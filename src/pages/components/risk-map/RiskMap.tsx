@@ -52,15 +52,19 @@ const RiskMap = () => {
     const [updateMarkerFlag, setUpdateMarkerFlag] = useState(false);
     const [currMarker, setCurrMarker] = useState<Data>({"Asset Name": "", "Lat": 0, "Long": 0, "Business Category": "","Risk Rating": 0, "Risk Factors": {},
     "Year": 0, "color": "", "clicked": false});
+    const [added, setAdded] = useState(false);
     const data = useSelector((state: RootState) => state.data.data);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const storedData = localStorage.getItem('data');
-        if (!storedData || storedData === '[]') {
+        if (storedData === null) {
             fetch('/api/data')
             .then((response) => response.json())
-            .then((data) => dispatch(setData(data)))
+            .then((data) => {
+                dispatch(setData(data))
+                localStorage.setItem('data', JSON.stringify(data));
+            })
             .catch((error) => console.log(error));
         }
         else {
@@ -87,13 +91,13 @@ const RiskMap = () => {
                 yearSet.add(row["Year"].toString());
                 ratingSet.add(row["Risk Rating"]);
             });
-            setYears([...yearSet] as string[]);
             var ratingArr: number[] = [...ratingSet] as number[];
             var colorArray: {[key: number]: string} = {};
             if (ratingArr.length > 0) {
                 colorArray = generateColors(ratingArr);
             }
             setUniqueColors(colorArray);
+            setYears([...yearSet] as string[]);
         }
     }, [dataset]);
 
@@ -124,6 +128,7 @@ const RiskMap = () => {
                     setDataWithMoreProperties(parsedData);
                 }
             }
+            setAdded(!added);
         }
     }, [uniqueColors]);
 
@@ -190,7 +195,7 @@ const RiskMap = () => {
             )
         });
         setSelectedMarkers(allClusters);
-    }, [year, dataWithMoreProperties]); 
+    }, [year, added]); 
 
     const updateData = () => {
         return dataWithMoreProperties.map((item) => {
@@ -222,6 +227,7 @@ const RiskMap = () => {
     useEffect(() => {
         const newData = updateData();
         if (newData && newData.length > 0) {
+            setAdded(!added);
             setDataWithMoreProperties(newData);
             localStorage.setItem('data', JSON.stringify(newData));
         }
@@ -246,7 +252,7 @@ const RiskMap = () => {
             sx={{ width: 300, padding: "20px" }}
             value={year}
             onChange={(event, newValue) => handleChange(newValue as string)}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => <TextField {...params} label="Year" />}
         />
         <MapContainer center={[47.867646, -97.409820]} zoom={4} scrollWheelZoom={true} 
         style={{height: "80%", width: "100%", position: "absolute"}}
