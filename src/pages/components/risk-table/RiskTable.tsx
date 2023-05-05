@@ -7,8 +7,8 @@ import { RootState } from '../../../../redux/store';
 
 export default function RiskTable() {
     const [yearlyData, setYearlyData] = useState<Data[]>([]);
-    const [factors, setFactors] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [factors, setFactors] = useState<string[]>([]);
+    const [categories, setCategories] = useState<string[]>([]);
     const [columns, setColumns] = useState<MRT_ColumnDef<Data>[]>([]);
     const data = useSelector((state: RootState) => state.data.data);
     const year = useSelector((state: RootState) => state.data.selectedYear);
@@ -27,8 +27,8 @@ export default function RiskTable() {
                     });
                 }
             });
-            setFactors([...factorSet]);
-            setCategories([...categorySet]);
+            setFactors([...factorSet] as string[]);
+            setCategories([...categorySet] as string[]);
         }
     }, [data]);
 
@@ -65,7 +65,7 @@ export default function RiskTable() {
                 header: 'Risk Factors',
                 filterVariant: 'multi-select',
                 filterSelectOptions: factors,
-                filterFn: (row, id, filterValue) => { 
+                filterFn: (row: any, id: string, filterValue: string[]) => { 
                     var factorObj = JSON.parse(row.getValue(id).toString());
                     var factorArr = Object.keys(factorObj);
                     return filterValue.every(val => factorArr.includes(val) && factorObj[val] > 0);

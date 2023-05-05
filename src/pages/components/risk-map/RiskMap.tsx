@@ -7,7 +7,7 @@ import {
     Tooltip
 } from "react-leaflet";
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import L, {LatLngExpression} from 'leaflet';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { Data } from '../../types/types';
@@ -87,8 +87,8 @@ const RiskMap = () => {
                 yearSet.add(row["Year"].toString());
                 ratingSet.add(row["Risk Rating"]);
             });
-            setYears([...yearSet]);
-            var ratingArr = [...ratingSet];
+            setYears([...yearSet] as string[]);
+            var ratingArr: number[] = [...ratingSet] as number[];
             var colorArray: {[key: number]: string} = {};
             if (ratingArr.length > 0) {
                 colorArray = generateColors(ratingArr);
@@ -129,7 +129,7 @@ const RiskMap = () => {
 
     const createMarkers = (markerData: Data[]) => {
         var clusteredMarkers = markerData.map((row, id) => {
-            var position = [row["Lat"], row["Long"]];;
+            var position = [row["Lat"], row["Long"]] as LatLngExpression;;
 
             var iconSettings = {
                 mapIconUrl: '<svg version="1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 149 178"><path fill="{mapIconColor}" stroke="#FFF" stroke-width="6" stroke-miterlimit="10" d="M126 23l-6-6A69 69 0 0 0 74 1a69 69 0 0 0-51 22A70 70 0 0 0 1 74c0 21 7 38 22 52l43 47c6 6 11 6 16 0l48-51c12-13 18-29 18-48 0-20-8-37-22-51z"/><circle fill="{mapIconColorInnerCircle}" cx="74" cy="75" r="61"/><circle fill="#FFF" cx="74" cy="75" r="{pinInnerCircleRadius}"/></svg>',
@@ -176,14 +176,14 @@ const RiskMap = () => {
                 clusterArr.push(cluster);
             }
             else {
-                var cluster: Cluster = clusterArr.find(c => c.key === key);
+                var cluster: Cluster = clusterArr.find(c => c.key === key) as Cluster;
                 cluster["member"].push(d);
             }
         });
-        const allClusters = clusterArr.map(cluster => {
+        const allClusters = clusterArr.map((cluster, id) => {
             var clusteredMarkers = createMarkers(cluster["member"]);
             return (
-                <MarkerClusterGroup spiderfyDistanceMultiplier={3}
+                <MarkerClusterGroup key={id} spiderfyDistanceMultiplier={3}
                     showCoverageOnHover={true} spiderfyOnMaxZoom={true}> 
                     { clusteredMarkers }
                 </MarkerClusterGroup>
@@ -245,7 +245,7 @@ const RiskMap = () => {
             options={years}
             sx={{ width: 300, padding: "20px" }}
             value={year}
-            onChange={(event, newValue) => handleChange(newValue)}
+            onChange={(event, newValue) => handleChange(newValue as string)}
             renderInput={(params) => <TextField {...params} />}
         />
         <MapContainer center={[47.867646, -97.409820]} zoom={4} scrollWheelZoom={true} 

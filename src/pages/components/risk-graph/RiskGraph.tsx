@@ -22,6 +22,14 @@ interface ChartData {
     datasets: DataSet[];
 }
 
+interface AssetObjectType {
+    [key: number]: string[]
+}
+
+interface FactorObjectType {
+    [key: number]: {"factors": string[], "top": {[key: string]: number}}
+}
+
 export default function LineChart() {
     const [toggleValue, setToggleValue] = useState('location');
     const [graphText, setGraphText] = useState('Risk Rating Based on the Location');
@@ -29,12 +37,12 @@ export default function LineChart() {
     const [locations, setLocations] = useState<string[]>([]);
     const [assets, setAssets] = useState<string[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
-    const [location, setLocation] = useState<string>("");
-    const [asset, setAsset] = useState<string>("");
-    const [category, setCategory] = useState<string>("");
+    const [location, setLocation] = useState("");
+    const [asset, setAsset] = useState("");
+    const [category, setCategory] = useState("");
     const [filteredData, setFilteredData] = useState<Data[]>([]);
-    const [selectedAssets, setSelectedAssets] = useState({});
-    const [selectedFactors, setSelectedFactors] = useState({});
+    const [selectedAssets, setSelectedAssets] = useState<AssetObjectType>({});
+    const [selectedFactors, setSelectedFactors] = useState<FactorObjectType>({});
     const data = useSelector((state: RootState) => state.data.data);
     const marker = useSelector((state: RootState) => state.data.selectedMarker);
 
@@ -49,13 +57,16 @@ export default function LineChart() {
                 assetSet.add(row["Asset Name"]);
                 categorySet.add(row["Business Category"]);
             });
-            var locationArr = [...locationSet];
+            var locationArr: string[] = [];
+            locationArr = [...locationSet] as string[];
             setLocation(locationArr[0]);
             setLocations(locationArr);
-            var assetArr = [...assetSet];
+            var assetArr: string[] = []
+            assetArr = [...assetSet] as string[];
             setAsset(assetArr[0]);
             setAssets(assetArr);
-            var categoryArr = [...categorySet];
+            var categoryArr: string[] = [];
+            categoryArr = [...categorySet] as string[];
             setCategory(categoryArr[0]);
             setCategories(categoryArr);
         }
@@ -74,8 +85,8 @@ export default function LineChart() {
             if (location) {
                 var lat = parseFloat(location.split(',')[0].trim());
                 var long = parseFloat(location.split(',')[1].trim());
-                var assetObj: {[key: number]: []} = {};
-                var factorObj: {[key: number]: {"factors": [], "top": {}}} = {};
+                var assetObj: AssetObjectType = {};
+                var factorObj: FactorObjectType = {};
                 var dataArr = data.filter(row => { 
                     if (row["Lat"] === lat && row["Long"] == long) {
                         if (!assetObj[row["Year"]]) {
@@ -108,7 +119,7 @@ export default function LineChart() {
         else if (toggleValue === "asset") {
             setGraphText('Risk Rating Based on the Asset');
             if (asset) {
-                var factorObj: {[key: number]: {"factors": [], "top": {}}} = {};
+                var factorObj: FactorObjectType = {};
                 var dataArr = data.filter(row => {
                     if (row["Asset Name"] === asset) {
                         var factors = JSON.parse(row["Risk Factors"].toString());
@@ -136,8 +147,8 @@ export default function LineChart() {
         else if (toggleValue === "category") {
             setGraphText('Risk Rating Based on the Business Category');
             if (category) {
-                var assetObj: {[key: number]: []} = {};
-                var factorObj: {[key: number]: {"factors": [], "top": {}}} = {};
+                var assetObj: AssetObjectType = {};
+                var factorObj: FactorObjectType = {};
                 var dataArr = data.filter(row => { 
                     if (row["Business Category"] === category) {
                         if (!assetObj[row["Year"]]) {
@@ -171,7 +182,7 @@ export default function LineChart() {
 
     useEffect(() => {
         var rating: number[] = [];
-        var ratingByYear = {2030: [0, 0], 2040: [0, 0], 2050: [0, 0], 2060: [0, 0], 2070: [0, 0]};
+        var ratingByYear: {[key: number]: number[]} = {2030: [0, 0], 2040: [0, 0], 2050: [0, 0], 2060: [0, 0], 2070: [0, 0]};
         filteredData.map(row => {
             const [yr, count] = ratingByYear[row["Year"]];
             ratingByYear[row["Year"]] = [yr + row["Risk Rating"], count + 1];
@@ -211,7 +222,7 @@ export default function LineChart() {
     
         const tooltipModel = context.tooltip;
         if (tooltipModel.opacity === 0) {
-            tooltipEl.style.opacity = 0;
+            tooltipEl.style.opacity = '0';
             return;
         }
 
@@ -222,7 +233,7 @@ export default function LineChart() {
             tooltipEl.classList.add('no-transform');
         }
     
-        function getBody(bodyItem) {
+        function getBody(bodyItem: any) {
             return bodyItem.lines;
         }
     
@@ -237,15 +248,15 @@ export default function LineChart() {
             var factorValues: string[] = [];
             var topFactor = {};
             if (toggleValue === 'location' || toggleValue === 'category') {
-                assetValues = [...new Set(selectedAssets[parseInt(title)])];
+                assetValues = [...new Set(selectedAssets[parseInt(title)])] as string[];
             }
             else if (toggleValue === 'asset') {
                 assetValues = [asset];
             }
-            factorValues = [...new Set(selectedFactors[parseInt(title)]["factors"])];
+            factorValues = [...new Set(selectedFactors[parseInt(title)]["factors"])] as string[];
             topFactor = JSON.stringify(selectedFactors[parseInt(title)]["top"]);
     
-            bodyLines.forEach(function(body) {
+            bodyLines.forEach(function(body: any) {
                 let rating = body.toString().split(':')[1].trim();
                 let style = 'background:' + "#ffffff";
                 style += '; border-color:' + "#000000";
@@ -261,12 +272,12 @@ export default function LineChart() {
             innerHtml += '</tbody>';
     
             let tableRoot = tooltipEl.querySelector('table');
-            tableRoot.innerHTML = innerHtml;
+            tableRoot!.innerHTML = innerHtml;
         }
     
         const position = context.chart.canvas.getBoundingClientRect();
     
-        tooltipEl.style.opacity = 1;
+        tooltipEl.style.opacity = '1';
         tooltipEl.style.position = 'absolute';
         tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
         tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
