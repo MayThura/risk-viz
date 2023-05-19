@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Data } from '../../src/pages/types/types';
+import { Data } from '../../types/types';
 import { RootState } from './main';
 
 interface DataState {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MaterialReactTable from 'material-react-table';
 import type { MRT_ColumnDef } from 'material-react-table'; 
-import { Data } from '../../types/types';
+import { Data } from '../../../../types/types';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../redux/store';
 

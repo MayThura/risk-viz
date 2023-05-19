@@ -13,8 +13,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { Data } from '../../types/types';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../../redux/store';
-import { setData, setSelectedYear, setSelectedMarker } from '../../../../redux/reducers/dataReducer';
+import { RootState } from '../../redux/store';
+import { setData, setSelectedYear, setSelectedMarker } from '../../redux/reducers/dataReducer';
 
 interface Cluster {
     "key": string,

@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState, useEffect } from 'react';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -6,15 +7,15 @@ import TabPanel from '@mui/lab/TabPanel';
 import Tabs from '@mui/material/Tabs';
 import dynamic from "next/dynamic";
 
-const RiskMap = dynamic(() => import("@/pages/components/risk-map/RiskMap"), {
+const RiskMap = dynamic(() => import("@/risk-map/RiskMap"), {
     ssr: false
 });
 
-const RiskTable = dynamic(() => import("@/pages/components/risk-table/RiskTable"), {
+const RiskTable = dynamic(() => import("@/app/components/risk-table/RiskTable"), {
   ssr: false
 });
 
-const RiskGraph = dynamic(() => import("@/pages/components/risk-graph/RiskGraph"), {
+const RiskGraph = dynamic(() => import("@/app/components/risk-graph/RiskGraph"), {
   ssr: false
 });
 

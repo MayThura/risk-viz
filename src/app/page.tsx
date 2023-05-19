@@ -1,5 +1,5 @@
 'use client'
-import TabComponent from "../pages/components/TabComponent";
+import TabComponent from "./components/TabComponent";
 import { Provider } from 'react-redux';
 import store from "../../redux/store";
 

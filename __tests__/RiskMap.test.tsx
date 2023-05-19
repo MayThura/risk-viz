@@ -1,6 +1,6 @@
 import { render, RenderResult } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import RiskMap from '@/pages/components/risk-map/RiskMap';
+import RiskMap from '@/risk-map/RiskMap';
 
 let wrapper: RenderResult;
 describe('Tabs', () => {

@@ -1,6 +1,6 @@
 import { render, RenderResult } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import TabComponent from '@/pages/components/TabComponent';
+import TabComponent from '@/app/components/TabComponent';
 
 let wrapper: RenderResult;
 describe('Tabs', () => {
