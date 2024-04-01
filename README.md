@@ -33,5 +33,5 @@ This interactive tool enables users to:
 
 ## Live Project
 
-Explore the Risk Visualization Platform live at [Risk Visualization]([url](https://risk-viz-deploy.vercel.app/)).
+Explore the Risk Visualization Platform live at [Risk Visualization](https://risk-viz-deploy.vercel.app/).
 
